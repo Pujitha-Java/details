@@ -10,17 +10,17 @@ import jakarta.persistence.Id;
     public class EmployeeEntity {
 
         @Id
-        @Column
+        @Column(name="id")
         private int id;
-        @Column
+        @Column(name="name")
         private String name;
-        @Column
+        @Column(name="age")
         private int age;
-        @Column
+        @Column(name="organization")
         private String organization;
-        @Column
+        @Column(name="type")
         private String type;
-        @Column
+        @Column(name="experience")
         private float experience;
 
 

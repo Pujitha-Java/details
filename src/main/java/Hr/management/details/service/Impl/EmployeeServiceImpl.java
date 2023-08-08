@@ -8,22 +8,22 @@ import Hr.management.details.repository.EmployeeRepository;
 import Hr.management.details.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Comparator;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class EmployeeServiceImpl implements EmployeeService {
-
+public class EmployeeServiceImpl implements EmployeeService{
+    @Autowired
     private  EmployeeRepository employeeRepository;
 
-    @Autowired
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
-
-        this.employeeRepository = employeeRepository;
-    }
 
     @Override
     public List<Employee> findAll() {
@@ -92,8 +92,38 @@ public class EmployeeServiceImpl implements EmployeeService {
                 lowestExperienceEmployee = employee;
             }
         }
-            return  ToEmployee(lowestExperienceEmployee);
+        return ToEmployee(lowestExperienceEmployee);
+    }
+
+    @Override
+    public List<EmployeeEntity> uploadFile(MultipartFile file) throws IOException {
+        BufferedReader br=new BufferedReader(new InputStreamReader(file.getInputStream()));
+        List<EmployeeEntity> employees = new ArrayList<>();
+        br.readLine();
+        String line = null;
+        while ((line = br.readLine()) != null) {
+            String[] data = line.split(",");
+            if (data.length == 6) {
+                String idStr = data[0].trim();
+                String name = data[1].trim();
+                String ageStr = data[2].trim();
+                String type = data[3].trim();
+                String organization=data[4].trim();
+                String experienceStr=data[5].trim();
+                int id = Integer.parseInt(idStr);
+                int age = Integer.parseInt(ageStr);
+                float experience=Float.parseFloat(experienceStr);
+                EmployeeEntity student = new EmployeeEntity(id, name, age,type,organization ,experience);
+                employees.add(student);
+
+            }
         }
+        employeeRepository.saveAll(employees);
+
+        return employees;
+
+    }
+
 
     private Employee ToEmployee(EmployeeEntity employeeEntity) {
         Employee employee = new Employee();
@@ -117,6 +147,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeEntity;
     }
 }
+
+
 
 
 
