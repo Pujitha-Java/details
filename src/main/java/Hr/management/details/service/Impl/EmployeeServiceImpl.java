@@ -8,7 +8,6 @@ import Hr.management.details.repository.EmployeeRepository;
 import Hr.management.details.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -17,7 +16,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
@@ -28,13 +26,20 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Override
     public List<Employee> findAll() {
         List<EmployeeEntity> employeeEntities = employeeRepository.findAll();
-        return employeeEntities.stream().map(this::ToEmployee).collect(Collectors.toList());
+        List<Employee> employees=new ArrayList<>();
+        for(EmployeeEntity entity:employeeEntities){
+            employees.add(ToEmployee(entity));
+        }
+        return employees;
     }
 
     @Override
-    public Optional<Employee> findById(int id) {
-        Optional<EmployeeEntity> employeeEntityOptional = employeeRepository.findById(id);
-        return employeeEntityOptional.map(this::ToEmployee);
+    public Employee findById(int id) {
+        Optional<EmployeeEntity> employeeEntities = employeeRepository.findById(id);
+        if(employeeEntities.isPresent()){
+            return ToEmployee(employeeEntities.get());
+        }
+        return null;
     }
 
     @Override
@@ -47,21 +52,38 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     public Employee updateEmployee(Employee employee) {
-        EmployeeEntity employeeEntity = ToEmployeeEntity(employee);
-        employeeRepository.save(employeeEntity);
-        return employee;
+        return null;
     }
 
     @Override
-    public void deleteEmployee(int id) {
+    public Employee updateEmployee(int id, Employee employee) {
+            EmployeeEntity newEmployee = employeeRepository.findById(id).orElse(null);
+            if (newEmployee != null) {
+                newEmployee.setName(employee.getName());
+                newEmployee.setAge(employee.getAge());
+                newEmployee.setOrganization(employee.getOrganization());
+                newEmployee.setType(employee.getType());
+                newEmployee.setExperience(employee.getExperience());
+                newEmployee = employeeRepository.save(newEmployee);
+                return ToEmployee(newEmployee);
+            }
+            return null;
+        }
 
+
+    @Override
+    public void deleteEmployee(int id) {
         employeeRepository.deleteById(id);
     }
 
     @Override
     public List<Employee> findAllByOrderByExperience() {
         List<EmployeeEntity> employeeEntities = employeeRepository.findAllByOrderByExperience();
-        return employeeEntities.stream().map(this::ToEmployee).collect(Collectors.toList());
+        List<Employee> employees=new ArrayList<>();
+        for(EmployeeEntity entity:employeeEntities){
+            employees.add(ToEmployee(entity));
+        }
+        return employees;
     }
 
     @Override
@@ -71,14 +93,14 @@ public class EmployeeServiceImpl implements EmployeeService{
             return null;
         }
         EmployeeEntity highestExperienceEmployee = employeeEntities.get(0);
-        for (EmployeeEntity employee : employeeEntities) {
+        for (int i=1;i<employeeEntities.size();i++) {
+            EmployeeEntity employee =employeeEntities.get(i);
             if (employee.getExperience() > highestExperienceEmployee.getExperience()) {
                 highestExperienceEmployee = employee;
             }
         }
         return  ToEmployee(highestExperienceEmployee);
     }
-
 
     @Override
     public Employee getEmployeeLowestExperience() {
@@ -87,7 +109,8 @@ public class EmployeeServiceImpl implements EmployeeService{
             return null;
         }
         EmployeeEntity lowestExperienceEmployee = employeeEntities.get(0);
-        for (EmployeeEntity employee : employeeEntities) {
+        for (int i=1;i<employeeEntities.size();i++) {
+            EmployeeEntity employee = employeeEntities.get(i);
             if (employee.getExperience() < lowestExperienceEmployee.getExperience()) {
                 lowestExperienceEmployee = employee;
             }
@@ -100,7 +123,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         BufferedReader br=new BufferedReader(new InputStreamReader(file.getInputStream()));
         List<EmployeeEntity> employees = new ArrayList<>();
         br.readLine();
-        String line = null;
+        String line;
         while ((line = br.readLine()) != null) {
             String[] data = line.split(",");
             if (data.length == 6) {
@@ -113,15 +136,12 @@ public class EmployeeServiceImpl implements EmployeeService{
                 int id = Integer.parseInt(idStr);
                 int age = Integer.parseInt(ageStr);
                 float experience=Float.parseFloat(experienceStr);
-                EmployeeEntity student = new EmployeeEntity(id, name, age,type,organization ,experience);
-                employees.add(student);
-
+                EmployeeEntity employee = new EmployeeEntity(id, name, age,type,organization ,experience);
+                employees.add(employee);
             }
         }
         employeeRepository.saveAll(employees);
-
         return employees;
-
     }
 
 

@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
+
 
     @RestController
     @RequestMapping("/employees")
@@ -24,7 +24,7 @@ import java.util.Optional;
         }
 
         @GetMapping("/{id}")
-        public Optional<Employee> findEmployeeById(@PathVariable int id) {
+        public Employee findEmployeeById(@PathVariable int id) {
 
             return employeeService.findById(id);
         }
@@ -35,12 +35,14 @@ import java.util.Optional;
             return employeeService.saveEmployee(employee);
         }
 
-        @PutMapping("/{id}")
-        public Employee updateEmployee(@PathVariable int id, @RequestBody Employee employee) {
-            employee.setId(id);
-            return employeeService.updateEmployee(employee);
-        }
 
+
+        @PutMapping("/{id}")
+        public Employee updateEmployee(
+                @PathVariable int id,
+                @RequestBody Employee employeeModel) {
+            return  employeeService.updateEmployee(id, employeeModel);
+        }
         @DeleteMapping("/{id}")
         public void deleteEmployee(@PathVariable int id) {
 
@@ -68,6 +70,7 @@ import java.util.Optional;
         public List<EmployeeEntity> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
             return employeeService.uploadFile(file);
         }
+
     }
 
 
