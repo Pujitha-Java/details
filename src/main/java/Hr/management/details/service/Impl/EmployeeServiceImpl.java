@@ -50,10 +50,7 @@ public class EmployeeServiceImpl implements EmployeeService{
         return employee;
     }
 
-    @Override
-    public Employee updateEmployee(Employee employee) {
-        return null;
-    }
+
 
     @Override
     public Employee updateEmployee(int id, Employee employee) {
