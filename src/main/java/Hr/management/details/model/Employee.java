@@ -8,7 +8,12 @@ package Hr.management.details.model;
         private String organization;
         private String type;
         private float experience;
-
+        public enum type{
+            INTERN,
+            HR,
+            PERMANENT,
+            CONTRACT
+        }
 
         public Employee() {
         }

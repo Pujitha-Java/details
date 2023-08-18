@@ -65,6 +65,11 @@ import java.util.List;
 
             return employeeService.getEmployeeLowestExperience();
         }
+        @GetMapping("/secondHighest-experience")
+        public Employee getSecondHighestExperience(){
+            return employeeService.getSecondHighestExperience();
+
+        }
 
           @PostMapping("/upload-file")
         public List<EmployeeEntity> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {

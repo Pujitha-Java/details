@@ -26,6 +26,11 @@ public interface EmployeeService {
         Employee getEmployeeHighestExperience();
 
         Employee getEmployeeLowestExperience();
+
+        // get all employee. u will get list
+        // use sorting and get the highest and lowest.
+        Employee getSecondHighestExperience();
+
         List<EmployeeEntity> uploadFile(MultipartFile file) throws IOException;
 }
 

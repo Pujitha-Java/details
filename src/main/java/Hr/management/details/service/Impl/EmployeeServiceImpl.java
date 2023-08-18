@@ -115,7 +115,15 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     // get all employee. u will get list
     // use sorting and get the highest and lowest.
-
+@Override
+public Employee getSecondHighestExperience() {
+    List<EmployeeEntity> employeeEntities = employeeRepository.findAllByOrderByExperienceDesc();
+    EmployeeEntity SecondHighestExperience = null;
+    if ((employeeEntities.size() >= 2)) {
+        SecondHighestExperience = employeeEntities.get(1);
+    }
+    return toEmployee(SecondHighestExperience);
+}
 
     @Override
     public List<EmployeeEntity> uploadFile(MultipartFile file) throws IOException {
