@@ -4,8 +4,10 @@ package Hr.management.details.service.Impl;
 
 import Hr.management.details.entity.EmployeeEntity;
 import Hr.management.details.model.Employee;
+import Hr.management.details.model.EmployeeType;
 import Hr.management.details.repository.EmployeeRepository;
 import Hr.management.details.service.EmployeeService;
+import jakarta.persistence.Enumerated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,7 +67,6 @@ public class EmployeeServiceImpl implements EmployeeService{
                     oldEmployee.setName(employee.getName());
                     oldEmployee.setAge(employee.getAge());
                     oldEmployee.setOrganization(employee.getOrganization());
-                    oldEmployee.setType(employee.getType());
                     oldEmployee.setExperience(employee.getExperience());
                     EmployeeEntity updated = employeeRepository.save(oldEmployee);
                     return toEmployee(updated);
@@ -124,7 +125,15 @@ public Employee getSecondHighestExperience() {
     }
     return toEmployee(SecondHighestExperience);
 }
-
+    @Override
+    public Employee getSecondLowestExperience() {
+        List<EmployeeEntity> employeeEntities = employeeRepository.findAllByOrderByExperienceAsc();
+        EmployeeEntity SecondLowestExperience = null;
+        if ((employeeEntities.size() >= 2)) {
+            SecondLowestExperience = employeeEntities.get(1);
+        }
+        return toEmployee(SecondLowestExperience);
+    }
     @Override
     public List<EmployeeEntity> uploadFile(MultipartFile file) throws IOException {
         BufferedReader br=new BufferedReader(new InputStreamReader(file.getInputStream()));
@@ -135,15 +144,19 @@ public Employee getSecondHighestExperience() {
             String[] data = line.split(",");
             if (data.length == 6) {
                 String idStr = data[0];
+                int id = Integer.parseInt(idStr);
                 String name = data[1];
                 String ageStr = data[2];
-                String type = data[3];
-                String organization=data[4];
-                String experienceStr=data[5];
-                int id = Integer.parseInt(idStr);
                 int age = Integer.parseInt(ageStr);
+                String organization=data[3];
+                String typeStr=data[4];
+                //convert the string to Enum EmployeeType
+                //EmployeeType type= EmployeeType.valueOf(EmployeeType.class,typeStr);
+                EmployeeType type = Enum.valueOf(EmployeeType.class,typeStr);
+                String experienceStr=data[5];
+
                 float experience=Float.parseFloat(experienceStr);
-                EmployeeEntity employee = new EmployeeEntity(id, name, age,type,organization ,experience);
+                EmployeeEntity employee = new EmployeeEntity(id, name, age,type,organization,experience);
                 employees.add(employee);
             }
         }
@@ -151,14 +164,17 @@ public Employee getSecondHighestExperience() {
         return employees;
     }
 
+
+
+
     // method name should not start with capital letter.
     private Employee toEmployee(EmployeeEntity employeeEntity) {
         Employee employee = new Employee();
         employee.setId(employeeEntity.getId());
         employee.setName(employeeEntity.getName());
         employee.setAge(employeeEntity.getAge());
-        employee.setOrganization(employeeEntity.getOrganization());
         employee.setType(employeeEntity.getType());
+        employee.setOrganization(employeeEntity.getOrganization());
         employee.setExperience(employeeEntity.getExperience());
         return employee;
     }

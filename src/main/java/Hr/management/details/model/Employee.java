@@ -1,29 +1,23 @@
 package Hr.management.details.model;
-
+import Hr.management.details.model.EmployeeType;
     public class Employee {
 
         private int id;
         private String name;
         private int age;
         private String organization;
-        private String type;
-        private float experience;
-        public enum type{
-            INTERN,
-            HR,
-            PERMANENT,
-            CONTRACT
-        }
 
+        private float experience;
+        private EmployeeType type;
         public Employee() {
         }
 
-        public Employee(int id, String name, int age, String organization,String type,float experience) {
+        public Employee(int id, String name, int age, EmployeeType type,String organization,float experience) {
             this.id = id;
             this.name = name;
             this.age = age;
-            this.organization= organization;
             this.type=type;
+            this.organization= organization;
             this.experience=experience;
         }
 
@@ -61,11 +55,11 @@ package Hr.management.details.model;
 
             this.organization = organization;
         }
-        public String getType(){
+        public EmployeeType getType(){
 
             return type;
         }
-        public void setType(String type){
+        public void setType(EmployeeType type){
             this.type=type;
 
         }

@@ -1,11 +1,9 @@
 package Hr.management.details.entity;
 
-    import jakarta.persistence.Column;
-    import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-    import jakarta.persistence.Table;
+    import Hr.management.details.model.EmployeeType;
+    import jakarta.persistence.*;
 
-    @Entity
+@Entity
     @Table
     public class EmployeeEntity {
 
@@ -18,8 +16,9 @@ import jakarta.persistence.Id;
         private int age;
         @Column(name="organization")
         private String organization;
+        @Enumerated(EnumType.STRING)
         @Column(name="type")
-        private String type;
+        private EmployeeType type;
         @Column(name="experience")
         private float experience;
 
@@ -27,12 +26,12 @@ import jakarta.persistence.Id;
         public EmployeeEntity() {
         }
 
-        public EmployeeEntity(int id, String name, int age, String organization,String type,float experience) {
+        public EmployeeEntity(int id, String name, int age,EmployeeType type,String organization,float experience) {
             this.id = id;
             this.name = name;
             this.age = age;
-            this.organization= organization;
             this.type=type;
+            this.organization= organization;
             this.experience=experience;
         }
 
@@ -70,11 +69,11 @@ import jakarta.persistence.Id;
 
             this.organization = organization;
         }
-        public String getType(){
+        public EmployeeType getType(){
 
             return type;
         }
-        public void setType(String type){
+        public void setType(EmployeeType type){
             this.type=type;
 
         }

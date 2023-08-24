@@ -3,7 +3,7 @@ package Hr.management.details.service;
 
 import Hr.management.details.entity.EmployeeEntity;
 import Hr.management.details.model.Employee;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -30,6 +30,8 @@ public interface EmployeeService {
         // get all employee. u will get list
         // use sorting and get the highest and lowest.
         Employee getSecondHighestExperience();
+
+        Employee getSecondLowestExperience();
 
         List<EmployeeEntity> uploadFile(MultipartFile file) throws IOException;
 }
